@@ -49,40 +49,42 @@ const tester = {
 
     },
 	setupCameras(scene, camRad = 5) {
-		// User Camera
-		const camera = new BABYLON.ArcRotateCamera("camera", (Math.PI / 1.5), (Math.PI / 5), camRad, new BABYLON.Vector3(0, 0, 0), scene);
-		//camera.setPosition(new BABYLON.Vector3(Math.PI, 0, camRad));
-		camera.viewport = new BABYLON.Viewport(0, 0, 0.75, 1.0);
+        let res = {}
 
-		const cameras = [];
+		// User Camera
+		res.main = new BABYLON.ArcRotateCamera("camera", (Math.PI / 1.5), (Math.PI / 5), camRad, new BABYLON.Vector3(0, 0, 0), scene);
+		//camera.setPosition(new BABYLON.Vector3(Math.PI, 0, camRad));
+		//camera.viewport = new BABYLON.Viewport(0, 0, 0.75, 1.0);
+
+		//const cameras = [];
 
 		// Front Camera
-		const camera1 = new BABYLON.ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 2, camRad, new BABYLON.Vector3(0, 0, 0));
+		res.camera1 = new BABYLON.ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 2, camRad, new BABYLON.Vector3(0, 0, 0), scene);
 		//camera1.viewport = new BABYLON.Viewport(0.75, 0.75, 0.25, 0.25);
-		cameras.push(camera1);
+		//cameras.push(camera1);
 
 		// Left Side Camera
-		const camera2 = new BABYLON.ArcRotateCamera("camera2", Math.PI, Math.PI / 2, camRad, new BABYLON.Vector3(0, 1, 0));
+		res.camera2 = new BABYLON.ArcRotateCamera("camera2", Math.PI, Math.PI / 2, camRad, new BABYLON.Vector3(0, 1, 0), scene);
 		//camera2.viewport = new BABYLON.Viewport(0.75, 0.5, 0.25, 0.25);
-		cameras.push(camera2);
+		//cameras.push(camera2);
 
 		// Top Camera
-		const camera3 = new BABYLON.ArcRotateCamera("camera3",  Math.PI, 0, camRad, new BABYLON.Vector3(0, 1, 1));
+		res.camera3 = new BABYLON.ArcRotateCamera("camera3",  Math.PI, 0, camRad, new BABYLON.Vector3(0, 1, 1), scene);
 		//camera3.viewport = new BABYLON.Viewport(0.75, 0.25, 0.25, 0.25);
-		cameras.push(camera3);
+		//cameras.push(camera3);
 
 		// Back Camera
-		const camera4 = new BABYLON.ArcRotateCamera("camera4", -(Math.PI / 2), Math.PI / 2, camRad, new BABYLON.Vector3(0, 0, 0));
+		res.camera4 = new BABYLON.ArcRotateCamera("camera4", -(Math.PI / 2), Math.PI / 2, camRad, new BABYLON.Vector3(0, 0, 0), scene);
 		//camera4.viewport = new BABYLON.Viewport(0.75, 0.0, 0.25, 0.25);
-		cameras.push(camera4);
+		//cameras.push(camera4);
 
 		// Iso Camera
-		const camera5 = new BABYLON.ArcRotateCamera("camera5", (Math.PI / 1.5), (Math.PI / 5), camRad, new BABYLON.Vector3(0, 0, 0));
-		cameras.push(camera5);
+		res.camera5 = new BABYLON.ArcRotateCamera("camera5", (Math.PI / 1.5), (Math.PI / 5), camRad, new BABYLON.Vector3(0, 0, 0), scene);
+		//cameras.push(camera5);
 
 
 
-		return {main: camera, viewPorts: cameras};
+		return res //{main: camera, viewPorts: cameras};
 	},
 	setupLighting(scene, intensity = 1) {
 		const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), scene);
@@ -92,8 +94,16 @@ const tester = {
 
 		light.intensity = intensity;
 		return light;
-	}
+	},
+    renderCamera(engine, camera) {
+        let imageRes = {width:800, height:400};
 
+        BABYLON.Tools.CreateScreenshotUsingRenderTarget(engine, camera, imageRes, data => {
+            let img = document.createElement('img');
+            img.setAttribute('src', data)
+            document.getElementById('imageContainer').append(img);
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', event => {
@@ -111,12 +121,6 @@ document.addEventListener('DOMContentLoaded', event => {
 		camera = cameras.main;
 		camera.attachControl(canvas, true);
 
-		scene.activeCameras.push(camera);
-		//scene.activeCameras.push(cameras.viewPorts[0]);
-		//scene.activeCameras.push(cameras.viewPorts[1]);
-		//scene.activeCameras.push(cameras.viewPorts[2]);
-		//scene.activeCameras.push(cameras.viewPorts[3]);
-
 		const light = tester.setupLighting(scene, lightIntesity)
 
         //Environment.loadSkyBox(scene)
@@ -133,18 +137,11 @@ document.addEventListener('DOMContentLoaded', event => {
 
 			const adt = GameGUI.addPanel(scene, () => {
 				//alert("you did it!");
-				BABYLON.Tools.CreateScreenshotUsingRenderTarget(engine, cameras.viewPorts[0], 1600, data => {
-					console.log("Image 1 saved")
-				});
-				BABYLON.Tools.CreateScreenshotUsingRenderTarget(engine, cameras.viewPorts[1], 1600, data => {
-					console.log("Image 2 saved")
-				});
-				BABYLON.Tools.CreateScreenshotUsingRenderTarget(engine, cameras.viewPorts[2], 1600, data => {
-					console.log("Image 3 saved")
-				});
-				BABYLON.Tools.CreateScreenshotUsingRenderTarget(engine, cameras.viewPorts[3], 1600, data => {
-					console.log("Image 4 saved")
-				});
+                tester.renderCamera(engine, cameras.camera1);
+                tester.renderCamera(engine, cameras.camera2);
+                tester.renderCamera(engine, cameras.camera3);
+                tester.renderCamera(engine, cameras.camera4);
+                tester.renderCamera(engine, cameras.camera5);
 			});
 		});
 

@@ -6,7 +6,14 @@ html, body {
     padding: 0;
 }
 #renderCanvas {
-    width: 100%;
+    width: 75%;
     height: 100%;
     touch-action: none;
 }
+#sidebar {
+    float:right;
+    height:100%;
+    width:22%;
+    overflow:hidden;
+}
+#sidebar img {width:100%}
