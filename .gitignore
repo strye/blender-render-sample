@@ -1,6 +1,8 @@
 # exclude blender files
-.blend
-.blend1
+*.blend
+*.blend1
+*.png
+.DS_Store
 
 # Logs
 logs
