@@ -3,6 +3,7 @@
 *.blend1
 *.png
 .DS_Store
+working
 
 # Logs
 logs

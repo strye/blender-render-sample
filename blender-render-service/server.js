@@ -1,11 +1,13 @@
 const RenderManager = require('./src/renderManager');
-//const fs = require('fs');
-//const BlenderProxy = require('./src/blenderProxy');
-
-//const { app, http, io } = require('./src/webapp');
+const { app, http, io } = require('./src/webapp');
 
 
-// app.get('/render', (req, res) => { })
+app.get('/render', (req, res) => { })
+io.of('/').on('connection', socket => {
+    console.log('a user connected');
+    socket.on('disconnect', () => { console.log('user disconected') })
+    socket.on('render', msg => { })
+})
 
 
 

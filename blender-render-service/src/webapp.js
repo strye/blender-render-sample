@@ -25,35 +25,6 @@ app.get('/test/render', (req, res) => {
 
 
 })
-app.get('/render', (req, res) => {
-
-})
-
-
-let sockets = require('./srv/sockets')
-sockets.Expanses.listen(io)
-let chnl = io.of('/');
-chnl.on('connection', socket => {
-    console.log('a user connected');
-    socket.on('disconnect', () => { console.log('user disconected') })
-    
-    // FOR TESTING
-    socket.on('test', msg => {
-        let proxy = new BlenderProxy();
-        proxy.callPython('./python/script1.py', 'Will')
-        .then(data => {socket.emit('test.response', data); console.log('result', data)})
-        .catch(err => {socket.emit('test.error',err); console.log('reject', err)});
-    })
-    // socket.on('ping.me', msg => {
-    //     console.log(`message ${msg}`)
-    //     socket.emit('pong.me', msg)
-    // })
-    // socket.on('ping.us', msg => {
-    //     console.log(`message ${msg}`)
-    //     socket.broadcast.emit('pong.all', msg)
-    // })
-    
-})
 
 
 //A Route for Creating a 500 Error (Useful to keep around)
