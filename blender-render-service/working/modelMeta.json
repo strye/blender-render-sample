@@ -1,9 +1,5 @@
 {
     "modelName": "theCube",
-    "screenshotSize": {
-      "width": 864,
-      "height": 864
-    },
     "cameras": [
         { "cameraName": "Camera1", "imageName": "iso1.png", "width":1600, "height": 1400 },
         { "cameraName": "Camera2", "imageName": "iso2.png", "width":1800, "height": 1200 }

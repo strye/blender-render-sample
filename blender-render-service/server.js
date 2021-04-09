@@ -1,21 +1,31 @@
-const pyProx = require('./python/pythonProxy');
+const RenderManager = require('./src/renderManager');
+//const fs = require('fs');
+//const BlenderProxy = require('./src/blenderProxy');
 
-// Lets test first
-let proxy = new pyProx();
-proxy.callScript('./python/script1.py', 'Will')
-.then(res => {console.log('result', res)})
-.catch(rej => {console.log('reject', rej)});
+//const { app, http, io } = require('./src/webapp');
 
 
-// Get scene from S3
-// Save parameters file
-// Run blender from command line
-
-// Save Renders
+// app.get('/render', (req, res) => { })
 
 
-// Start blender with python file
 
-// blender --background theCubeBase.blend --python "python/blenderTest.py"
-// blender --background theCubeBase.blend --python "python/script1.py 'Will'"
+renderScene = (designJSON) => {
+    RenderManager.cleanWorkingFolder();
+
+    let bp = new RenderManager(RenderManager.testParams);
+    let rs = bp.renderScene();
+    rs.then(images => {
+        images.forEach(img => {
+            console.log(img);
+        });
+        // Send images to client
+    
+        // Save images to cache
+    })
+    .catch(err => {
+        console.log(err)
+    })    
+}
+
+
 
