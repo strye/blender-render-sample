@@ -1,9 +1,13 @@
-const port = 8080,
+const port = 8081,
 express = require("express"),
 app = express(),
 http = require('http').Server(app),
 io = require('socket.io')(http, {
 	pingTimeout: 60000,
+    cors: {
+        origin: "http://localhost:8080",
+        methods: ["GET", "POST"]
+    }
 });
 
 //app.use(express.static('web'))
@@ -12,7 +16,9 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 
-app.get('/', (req, res) => { });
+app.get('/', (req, res) => { 
+    res.send('<h1>Welcome</h1>');
+});
 app.get('/test', (req, res) => {
     let proxy = new BlenderProxy();
     proxy.callPython('./python/script1.py', 'Will')

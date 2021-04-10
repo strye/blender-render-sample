@@ -6,7 +6,9 @@ app.get('/render', (req, res) => { })
 io.of('/').on('connection', socket => {
     console.log('a user connected');
     socket.on('disconnect', () => { console.log('user disconected') })
-    socket.on('render', msg => { })
+    socket.on('render', msg => { 
+        console.log(msg.msg);
+    })
 })
 
 

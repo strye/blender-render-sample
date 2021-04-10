@@ -26,6 +26,7 @@
     "babylonjs": "^4.2.0",
     "babylonjs-gui": "^4.2.0",
     "earcut": "^2.2.2",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "socket.io-client": "^4.0.1"
   }
 }
