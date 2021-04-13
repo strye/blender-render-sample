@@ -54,8 +54,17 @@ class RenderManager {
         let self = this;
         return this._callBlender()
         .then(images => {
-            self._imagePaths = images
-            return images;
+            self._imagePaths = [];
+            images.forEach(img => {
+                // read binary data
+                // convert binary data to base64 encoded string
+                let item ={
+                    fileName: img,
+                    imageData: self._encodeFile(file)
+                }
+                self._imagePaths.push(item);
+            });
+            return self._imagePaths;
         })
 
     }
@@ -112,6 +121,10 @@ class RenderManager {
 			})
 		});
 	}
+    _encodeFile(fileName) {
+        let bitmap = fs.readFileSync('./working/'+fileName);
+        return Buffer(bitmap).toString('base64');
+    }
 
     static testParams = {
         "sceneName": "theCube",
