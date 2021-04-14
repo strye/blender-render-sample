@@ -16,8 +16,12 @@ import * as BABYLON from "@babylonjs/core";
 //import { Engine, Scene, ArcRotateCamera, HemisphericLight, Vector3, MeshBuilder, Mesh } from "@babylonjs/core";
 //import * as GUI from 'babylonjs-gui';
 
-const socket = io('http://localhost:8081');
-
+const socket = io('http://localhost:8081',{rejectUnauthorized: false});
+socket.on('render.images', image => { 
+    console.log(image.imageName);
+    tester.updateImage(image.imageName, image.imageData);
+})
+socket.on('render.images.error', err => { console.log(err); })
 
 const tester = {
 	setupCameras(scene, camRad = 5) {
@@ -28,16 +32,12 @@ const tester = {
 
 		// Front Camera
 		res.camera1 = new BABYLON.ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 2, camRad, new BABYLON.Vector3(0, 0, 0), scene);
-
 		// Left Side Camera
 		res.camera2 = new BABYLON.ArcRotateCamera("camera2", Math.PI, Math.PI / 2, camRad, new BABYLON.Vector3(0, 1, 0), scene);
-
 		// Top Camera
 		res.camera3 = new BABYLON.ArcRotateCamera("camera3",  Math.PI, 0, camRad, new BABYLON.Vector3(0, 1, 1), scene);
-
 		// Back Camera
 		res.camera4 = new BABYLON.ArcRotateCamera("camera4", -(Math.PI / 2), Math.PI / 2, camRad, new BABYLON.Vector3(0, 0, 0), scene);
-
 		// Iso Camera
 		res.camera5 = new BABYLON.ArcRotateCamera("camera5", (Math.PI / 1.5), (Math.PI / 5), camRad, new BABYLON.Vector3(0, 0, 0), scene);
 
@@ -53,13 +53,25 @@ const tester = {
 		return light;
 	},
     renderCamera(engine, camera) {
-        let imageRes = {width:800, height:400};
+        let imageRes = {width:800, height:400},
+        self = this;
 
         BABYLON.Tools.CreateScreenshotUsingRenderTarget(engine, camera, imageRes, data => {
-            let img = document.createElement('img');
-            img.setAttribute('src', data)
-            document.getElementById('imageContainer').append(img);
+            self.updateImage(camera.name, data);
+            // let img = document.createElement('img');
+            // img.setAttribute('src', data)
+            // document.getElementById('imageContainer').append(img);
         });
+    },
+    updateImage(frameName, data) {
+        let img = document.getElementById(frameName);
+        if (!img) {
+            img = document.createElement('img');
+            img.setAttribute('id', frameName);
+        }
+
+        img.setAttribute('src', data)
+        document.getElementById('imageContainer').append(img);
     }
 }
 

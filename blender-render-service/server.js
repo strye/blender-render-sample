@@ -8,6 +8,18 @@ io.of('/').on('connection', socket => {
     socket.on('disconnect', () => { console.log('user disconected') })
     socket.on('render', msg => { 
         console.log(msg.msg);
+        let rs = renderScene(msg);
+        rs.then(images => {
+            socket.send('render.images', images);
+            images.forEach(img => {
+                console.log(img.imageName, img.fileName);
+                socket.emit('render.images', img);
+            });
+        })
+        .catch(err => {
+            console.log(err)
+            socket.emit('render.images.error', err);
+        })
     })
 })
 
@@ -15,20 +27,8 @@ io.of('/').on('connection', socket => {
 
 renderScene = (designJSON) => {
     RenderManager.cleanWorkingFolder();
-
     let bp = new RenderManager(RenderManager.testParams);
-    let rs = bp.renderScene();
-    rs.then(images => {
-        images.forEach(img => {
-            console.log(img);
-        });
-        // Send images to client
-    
-        // Save images to cache
-    })
-    .catch(err => {
-        console.log(err)
-    })    
+    return bp.renderScene();
 }
 
 

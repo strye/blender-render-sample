@@ -1,8 +1,8 @@
 {
     "modelName": "theCube",
     "cameras": [
-        { "cameraName": "Camera1", "imageName": "iso1.png", "width":1600, "height": 1400 },
-        { "cameraName": "Camera2", "imageName": "iso2.png", "width":1800, "height": 1200 }
+        { "cameraName": "Camera1", "imageName": "camera1.png", "width":3840, "height": 2160 },
+        { "cameraName": "Camera2", "imageName": "camera2.png", "width":3840, "height": 2160 }
     ],
     "materials": [
         { "meshName": "Cube", "materialName": "blue", "hex": "38383a" },

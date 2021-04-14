@@ -55,12 +55,11 @@ class RenderManager {
         return this._callBlender()
         .then(images => {
             self._imagePaths = [];
-            images.forEach(img => {
-                // read binary data
-                // convert binary data to base64 encoded string
+            images.forEach(imgPath => {
                 let item ={
-                    fileName: img,
-                    imageData: self._encodeFile(file)
+                    imageName: path.basename(imgPath, '.png'),
+                    fileName: path.basename(imgPath),
+                    imageData: self._encodeFile(imgPath)
                 }
                 self._imagePaths.push(item);
             });
@@ -122,8 +121,9 @@ class RenderManager {
 		});
 	}
     _encodeFile(fileName) {
-        let bitmap = fs.readFileSync('./working/'+fileName);
-        return Buffer(bitmap).toString('base64');
+        let bitmap = fs.readFileSync(fileName);
+        let buf = Buffer.from(bitmap).toString('base64');
+        return `data:image/png;base64,${buf}`
     }
 
     static testParams = {
