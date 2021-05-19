@@ -8,13 +8,22 @@ io.of('/').on('connection', socket => {
     socket.on('disconnect', () => { console.log('user disconected') })
     socket.on('render', msg => { 
         console.log(msg.msg);
-        let rs = renderScene(msg);
+        RenderManager.cleanWorkingFolder();
+        let bp = new RenderManager(RenderManager.testParams);
+        bp.on('imageReady', img => {
+            socket.emit('render.image', img);
+        })
+
+        let rs =  bp.renderScene();
         rs.then(images => {
-            socket.send('render.images', images);
-            images.forEach(img => {
-                console.log(img.imageName, img.fileName);
-                socket.emit('render.images', img);
-            });
+            // images.forEach(img => {
+            //     console.log(img.imageName, img.fileName);
+            //     load to S3;
+            //     load to dynamoDb;
+            // });
+
+            // Legacy
+            // socket.send('render.images', images);
         })
         .catch(err => {
             console.log(err)
@@ -22,14 +31,4 @@ io.of('/').on('connection', socket => {
         })
     })
 })
-
-
-
-renderScene = (designJSON) => {
-    RenderManager.cleanWorkingFolder();
-    let bp = new RenderManager(RenderManager.testParams);
-    return bp.renderScene();
-}
-
-
 

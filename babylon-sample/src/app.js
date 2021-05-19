@@ -17,7 +17,7 @@ import * as BABYLON from "@babylonjs/core";
 //import * as GUI from 'babylonjs-gui';
 
 const socket = io('http://localhost:8081',{rejectUnauthorized: false});
-socket.on('render.images', image => { 
+socket.on('render.image', image => { 
     console.log(image.imageName);
     tester.updateImage(image.imageName, image.imageData);
 })

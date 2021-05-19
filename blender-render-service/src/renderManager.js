@@ -1,3 +1,4 @@
+const EventEmitter = require('events');
 const fs = require('fs');
 const path = require('path');
 
@@ -5,7 +6,7 @@ const {spawn} = require('child_process');
 //const BlenderProxy = require('./src/blenderProxy');
 
 
-class RenderManager {
+class RenderManager extends EventEmitter {
     static cleanWorkingFolder() { 
         const directory = './working';
         let files = fs.readdirSync(directory);
@@ -16,6 +17,7 @@ class RenderManager {
     }
 
     constructor(designParams) {
+        super();
 
         this._designJSON = designParams;
         this._imagePaths = [];
@@ -52,17 +54,9 @@ class RenderManager {
 
         // Run blender from command line
         let self = this;
+        self._imagePaths = [];
         return this._callBlender()
-        .then(images => {
-            self._imagePaths = [];
-            images.forEach(imgPath => {
-                let item ={
-                    imageName: path.basename(imgPath, '.png'),
-                    fileName: path.basename(imgPath),
-                    imageData: self._encodeFile(imgPath)
-                }
-                self._imagePaths.push(item);
-            });
+        .then(results => {
             return self._imagePaths;
         })
 
@@ -81,10 +75,11 @@ class RenderManager {
     saveImagesToCache() { } 
 
     async _callBlender() {
+        let self = this;
         //--background theCubeBase.blend --python 'python/blenderTest.py'
 		return new Promise((res,rej) => {
-			let imagePaths = [],
-            pyScript = `--python "script"`;
+			// let imagePaths = [],\;
+            let pyScript = `--python "script"`;
 			const blender = spawn('blender', ["--background", "working/scene.blend", "--python", "python/blenderRender.py"]);
 			blender.stdout.on('data', data => {
 				//dataToSend += data.toString();
@@ -92,14 +87,21 @@ class RenderManager {
                 let resString = data.toString();
                 if (resString.startsWith("Saved:")) {
                     let img = resString.split("'")[1].trim();
-                    imagePaths.push(img)
+
+                    let item ={
+                        imageName: path.basename(img, '.png'),
+                        fileName: path.basename(img),
+                        imageData: self._encodeFile(img)
+                    }
+                    self._imagePaths.push(item);
+                    self.emit('imageReady', item);
                 }
 				//console.log('Pipe data from blender script...');
 				console.log(resString);
 			})
 			blender.on('close', (code) => {
 				console.log(`child process close all stio with code ${code}`);
-                res(imagePaths);
+                res({ success: true});
 			})
 		});
 	}
