@@ -1,0 +1,20 @@
+{
+  "name": "babylon-lamda",
+  "version": "1.0.0",
+  "description": "Demo of using AWS Lambda and puppeteer to render babylon js images ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "babylonjs",
+    "puppeteer",
+    "lambda"
+  ],
+  "author": "Will Strye",
+  "license": "ISC",
+  "dependencies": {
+    "chrome-aws-lambda": "^10.1.0",
+    "puppeteer-core": "^10.2.0"
+  }
+}
